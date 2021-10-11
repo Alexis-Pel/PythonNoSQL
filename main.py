@@ -8,7 +8,11 @@ host = os.environ["HOST"]
 
 @app.route("/")
 def print_hi():
-    return '<h1>hi</h1>'
+    """
+    Fonction affichant un titre 'Hi'
+    :return: string : Hey You
+    """
+    return '<h1>Hey You !</h1>'
 
 
 if __name__ == '__main__':
