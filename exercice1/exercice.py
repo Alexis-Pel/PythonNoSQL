@@ -19,6 +19,10 @@ def main():
 
 @app.route("/users", methods=["GET"])
 def users():
+    """
+        Fonction permettant d'afficher une liste de users
+        :return: user_list
+        """
     if request.method == "GET":
         user_list = []
         for file in os.listdir("exercice1/users"):
@@ -35,6 +39,10 @@ def users():
 
 @app.route("/users", methods=["POST"])
 def post():
+    """
+        Fonction permettant de créer un user
+            :return: string : Utilisateur ajouté
+        """
     try:
         name_arg = request.args['name']
     except:
@@ -59,6 +67,11 @@ def post():
 
 @app.route("/users", methods=["PATCH"])
 def patch():
+    """
+        Fonction permettant de modifier
+        :return: string : Utilisateur modifié
+        :exception: string: Id Introuvable, Id Incorrect
+        """
     try:
         name_arg = request.args['name']
     except:
@@ -96,6 +109,11 @@ def patch():
 
 @app.route("/users", methods=["DELETE"])
 def delete():
+    """
+        Fonction permettant de supprimer un user
+        :return: string : Utilisateur Supprimé
+        :exception: string : Utilisateur Introuvable
+        """
     try:
         id_arg = int(request.args['id'])
     except:
