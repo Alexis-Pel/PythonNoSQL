@@ -10,10 +10,10 @@ host = os.environ["HOST"]
 @app.route("/")
 def main():
     """
-    Fonction affichant un titre 'Hi'
-    :return: string : Hey You
+    Fonction affichant un titre
+    :return: string : Accueil
     """
-    return make_response('<h1>Hey You !</h1>', 200)
+    return make_response('<h1>Accueil</h1>', 200)
 
 
 @app.route("/users", methods=["GET"])
