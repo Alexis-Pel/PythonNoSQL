@@ -24,8 +24,8 @@ def users():
         :return: user_list
         """
     user_list = []
-    for file in os.listdir("exercice1/users"):
-        with open(os.path.join("exercice1/users", file), 'r') as f:
+    for file in os.listdir("users"):
+        with open(os.path.join("users", file), 'r') as f:
             user = f.readlines()
             last_name = user[0][0:-1]
             name = user[1]
@@ -62,10 +62,10 @@ def post():
         return make_response("Id Incorrect", 400)
 
     try:
-        open(os.path.join("exercice1/users", f'{id_arg}.txt'))
+        open(os.path.join("users", f'{id_arg}.txt'))
         return make_response("Utilisateur déja existant", 409)
     except:
-        with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
+        with open(os.path.join("users", f'{id_arg}.txt'), 'w') as f:
             f.write(last_name_arg + '\n' + name_arg)
         return make_response("Utilisateur ajouté", 200)
 
@@ -95,7 +95,7 @@ def patch():
         return make_response("Id Incorrect", 400)
 
     try:
-        with open(os.path.join("exercice1/users", f'{str(id_arg)}.txt'), 'r') as f:
+        with open(os.path.join("users", f'{str(id_arg)}.txt'), 'r') as f:
             user = f.readlines()
             last_name_used = user[0][0:-1]
             name_used = user[1]
@@ -111,7 +111,7 @@ def patch():
     except:
         return make_response("Utilisateur Introuvable", 404)
 
-    with open(os.path.join("exercice1/users", f'{str(id_arg)}.txt'), 'w') as f:
+    with open(os.path.join("users", f'{str(id_arg)}.txt'), 'w') as f:
         f.write(f"{last_name}\n{name}")
         return make_response("Utilisateur Modifié", 200)
 
@@ -128,7 +128,7 @@ def delete():
     except:
         return "Id Incorrect"
     try:
-        os.remove(os.path.join("exercice1/users", f'{id_arg}.txt'))
+        os.remove(os.path.join("users", f'{id_arg}.txt'))
         return make_response("Utilisateur Supprimé", 200)
     except:
         return make_response("Utilisateur Introuvable", 404)
