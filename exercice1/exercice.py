@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import make_response
+
 app = Flask(__name__)
 host = os.environ["HOST"]
 
@@ -20,7 +21,7 @@ def main():
 def users():
     if request.method == "GET":
         user_list = []
-        for file in os.listdir("users"):
+        for file in os.listdir("exercice1/users"):
             with open(os.path.join("users", file), 'r') as f:
                 user = f.readlines()
                 last_name = user[0][0:-1]
@@ -48,10 +49,10 @@ def post():
         return "Id Incorrect"
 
     try:
-        open(os.path.join("users", f'{id_arg}.txt'))
+        open(os.path.join("exercice1/users", f'{id_arg}.txt'))
         return "Utilisateur déja existant"
     except:
-        with open(os.path.join("users", f'{id_arg}.txt'), 'w') as f:
+        with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
             f.write(last_name_arg + '\n' + name_arg)
         return make_response("Utilisateur ajouté", 200)
 
@@ -61,30 +62,36 @@ def patch():
     try:
         name_arg = request.args['name']
     except:
-        return "Prénom Incorrect"
+        name_arg = None
     try:
         last_name_arg = request.args['last_name']
     except:
-        return "Nom Incorrect"
+        last_name_arg = None
     try:
-        id_arg = int(request.args['id'])
+        id_arg = request.args['id']
     except:
         return "Id Incorrect"
 
     try:
-        with open(os.path.join("users", f'{id_arg}.txt'), 'r') as f:
+        with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'r') as f:
             user = f.readlines()
-            last_name_used, name_used = user[0][0:-1], user[1]
+            last_name_used = user[0][0:-1]
+            name_used = user[1]
             if name_arg is None:
                 name = name_used
+            else:
+                name = name_arg
+
             if last_name_arg is None:
                 last_name = last_name_used
-
-        with open(os.path.join("users", f'{id_arg}.txt'), 'w') as f:
-            f.write(f"{last_name}\n{name}")
-            return make_response("Utilisateur Modifié", 200)
+            else:
+                last_name = last_name_arg
     except:
         return "Utilisateur Introuvable"
+
+    with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
+        f.write(f"{last_name}\n{name}")
+        return make_response("Utilisateur Modifié", 200)
 
 
 @app.route("/users", methods=["DELETE"])
@@ -94,7 +101,7 @@ def delete():
     except:
         return "Id Incorrect"
     try:
-        os.remove(os.path.join("users", f'{id_arg}.txt'))
+        os.remove(os.path.join("exercice1/users", f'{id_arg}.txt'))
         return make_response("Utilisateur Supprimé", 200)
     except:
         return "Utilisateur Introuvable"
