@@ -22,7 +22,7 @@ def users():
     if request.method == "GET":
         user_list = []
         for file in os.listdir("exercice1/users"):
-            with open(os.path.join("users", file), 'r') as f:
+            with open(os.path.join("exercice1/users", file), 'r') as f:
                 user = f.readlines()
                 last_name = user[0][0:-1]
                 name = user[1]
