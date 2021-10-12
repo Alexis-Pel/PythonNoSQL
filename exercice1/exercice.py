@@ -44,14 +44,20 @@ def post():
         """
     try:
         name_arg = request.args['name']
+        if not name_arg.isalnum() or name_arg.isdigit():
+            return make_response("Prénom Incorrect", 400)
     except:
         return make_response("Prénom Incorrect", 400)
     try:
         last_name_arg = request.args['last_name']
+        if not last_name_arg.isalnum() or last_name_arg.isdigit():
+            return make_response("Nom Incorrect", 400)
     except:
         return make_response("Nom Incorrect", 400)
     try:
         id_arg = int(request.args['id'])
+        if not id_arg == "":
+            return make_response("Id Incorrect", 400)
     except:
         return make_response("Id Incorrect", 400)
 
@@ -73,19 +79,23 @@ def patch():
         """
     try:
         name_arg = request.args['name']
+        if not name_arg.isalnum() or name_arg.isdigit():
+            return make_response("Prénom Incorrect", 400)
     except:
         name_arg = None
     try:
         last_name_arg = request.args['last_name']
+        if not last_name_arg.isalnum() or last_name_arg.isdigit():
+            return make_response("Nom Incorrect", 400)
     except:
         last_name_arg = None
     try:
-        id_arg = request.args['id']
+        id_arg = int(request.args['id'])
     except:
         return make_response("Id Incorrect", 400)
 
     try:
-        with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'r') as f:
+        with open(os.path.join("exercice1/users", f'{str(id_arg)}.txt'), 'r') as f:
             user = f.readlines()
             last_name_used = user[0][0:-1]
             name_used = user[1]
@@ -101,7 +111,7 @@ def patch():
     except:
         return make_response("Utilisateur Introuvable", 404)
 
-    with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
+    with open(os.path.join("exercice1/users", f'{str(id_arg)}.txt'), 'w') as f:
         f.write(f"{last_name}\n{name}")
         return make_response("Utilisateur Modifié", 200)
 
