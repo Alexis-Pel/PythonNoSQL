@@ -23,18 +23,17 @@ def users():
         Fonction permettant d'afficher une liste de users
         :return: user_list
         """
-    if request.method == "GET":
-        user_list = []
-        for file in os.listdir("exercice1/users"):
-            with open(os.path.join("exercice1/users", file), 'r') as f:
-                user = f.readlines()
-                last_name = user[0][0:-1]
-                name = user[1]
-                title = file.title()
-                title = title.split('.')
-                title = title[0]
-                user_list.append({"id": title, "last_name": last_name, "name": name})
-        return make_response(str(list(reversed(user_list))), 200)
+    user_list = []
+    for file in os.listdir("exercice1/users"):
+        with open(os.path.join("exercice1/users", file), 'r') as f:
+            user = f.readlines()
+            last_name = user[0][0:-1]
+            name = user[1]
+            title = file.title()
+            title = title.split('.')
+            title = title[0]
+            user_list.append({"id": title, "last_name": last_name, "name": name})
+    return make_response(str(list(reversed(user_list))), 200)
 
 
 @app.route("/users", methods=["POST"])
@@ -46,19 +45,19 @@ def post():
     try:
         name_arg = request.args['name']
     except:
-        return "Prénom Incorrect"
+        return make_response("Prénom Incorrect", 400)
     try:
         last_name_arg = request.args['last_name']
     except:
-        return "Nom Incorrect"
+        return make_response("Nom Incorrect", 400)
     try:
         id_arg = int(request.args['id'])
     except:
-        return "Id Incorrect"
+        return make_response("Id Incorrect", 400)
 
     try:
         open(os.path.join("exercice1/users", f'{id_arg}.txt'))
-        return "Utilisateur déja existant"
+        return make_response("Utilisateur déja existant", 409)
     except:
         with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
             f.write(last_name_arg + '\n' + name_arg)
@@ -83,7 +82,7 @@ def patch():
     try:
         id_arg = request.args['id']
     except:
-        return "Id Incorrect"
+        return make_response("Id Incorrect", 400)
 
     try:
         with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'r') as f:
@@ -100,7 +99,7 @@ def patch():
             else:
                 last_name = last_name_arg
     except:
-        return "Utilisateur Introuvable"
+        return make_response("Utilisateur Introuvable", 404)
 
     with open(os.path.join("exercice1/users", f'{id_arg}.txt'), 'w') as f:
         f.write(f"{last_name}\n{name}")
@@ -122,7 +121,7 @@ def delete():
         os.remove(os.path.join("exercice1/users", f'{id_arg}.txt'))
         return make_response("Utilisateur Supprimé", 200)
     except:
-        return "Utilisateur Introuvable"
+        return make_response("Utilisateur Introuvable", 404)
 
 
 if __name__ == '__main__':
