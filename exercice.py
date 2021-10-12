@@ -1,12 +1,20 @@
 import os
-
 from flask import Flask
 from flask import request
 from flask import make_response
+from pymongo import MongoClient
 
 app = Flask(__name__)
 host = os.environ["HOST"]
+username = os.environ["DB_USER"]
+password = os.environ["DB_PASS"]
+cluster = os.environ["CLUSTER"]
+database_name = os.environ["DB"]
+collection_name = os.environ["COLLECTION"]
 
+client = MongoClient(f"mongodb+srv://{username}:{password}@{cluster}/{database_name}?retryWrites=true&w=majority")
+db = client[database_name]
+collection = db[collection_name]
 
 @app.route("/")
 def main():
