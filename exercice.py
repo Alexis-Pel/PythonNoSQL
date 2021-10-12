@@ -16,6 +16,7 @@ client = MongoClient(f"mongodb+srv://{username}:{password}@{cluster}/{database_n
 db = client[database_name]
 collection = db[collection_name]
 
+
 @app.route("/")
 def main():
     """
@@ -32,16 +33,9 @@ def users():
         :return: user_list
         """
     user_list = []
-    for file in os.listdir("users"):
-        with open(os.path.join("users", file), 'r') as f:
-            user = f.readlines()
-            last_name = user[0][0:-1]
-            name = user[1]
-            title = file.title()
-            title = title.split('.')
-            title = title[0]
-            user_list.append({"id": title, "last_name": last_name, "name": name})
-    return make_response(str(list(reversed(user_list))), 200)
+    for i in collection.find():
+        user_list.append(i)
+    return make_response(str(user_list), 200)
 
 
 @app.route("/users", methods=["POST"])
@@ -64,18 +58,17 @@ def post():
         return make_response("Nom Incorrect", 400)
     try:
         id_arg = int(request.args['id'])
-        if not id_arg == "":
+        if id_arg == "":
             return make_response("Id Incorrect", 400)
     except:
         return make_response("Id Incorrect", 400)
 
-    try:
-        open(os.path.join("users", f'{id_arg}.txt'))
-        return make_response("Utilisateur déja existant", 409)
-    except:
-        with open(os.path.join("users", f'{id_arg}.txt'), 'w') as f:
-            f.write(last_name_arg + '\n' + name_arg)
+    result = collection.find_one({'_id': id_arg})
+    if result is None:
+        collection.insert_one({'_id': id_arg, 'last_name': last_name_arg, 'name': name_arg})
         return make_response("Utilisateur ajouté", 200)
+    else:
+        return make_response("Utilisateur déja existant", 409)
 
 
 @app.route("/users", methods=["PATCH"])
@@ -103,25 +96,20 @@ def patch():
         return make_response("Id Incorrect", 400)
 
     try:
-        with open(os.path.join("users", f'{str(id_arg)}.txt'), 'r') as f:
-            user = f.readlines()
-            last_name_used = user[0][0:-1]
-            name_used = user[1]
-            if name_arg is None:
-                name = name_used
-            else:
-                name = name_arg
+        if name_arg is None:
+            name = collection.find_one({'_id': id_arg})['name']
+        else:
+            name = name_arg
 
-            if last_name_arg is None:
-                last_name = last_name_used
-            else:
-                last_name = last_name_arg
+        if last_name_arg is None:
+            last_name = collection.find_one({'_id': id_arg})['last_name']
+        else:
+            last_name = last_name_arg
     except:
         return make_response("Utilisateur Introuvable", 404)
 
-    with open(os.path.join("users", f'{str(id_arg)}.txt'), 'w') as f:
-        f.write(f"{last_name}\n{name}")
-        return make_response("Utilisateur Modifié", 200)
+    collection.update_one({'_id': id_arg}, {'$set': {'name': name, 'last_name': last_name}})
+    return make_response("Utilisateur Modifié", 200)
 
 
 @app.route("/users", methods=["DELETE"])
@@ -136,7 +124,7 @@ def delete():
     except:
         return "Id Incorrect"
     try:
-        os.remove(os.path.join("users", f'{id_arg}.txt'))
+        collection.delete_one({'_id':id_arg})
         return make_response("Utilisateur Supprimé", 200)
     except:
         return make_response("Utilisateur Introuvable", 404)
