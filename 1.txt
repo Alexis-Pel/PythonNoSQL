@@ -1,0 +1,15 @@
+[
+{name: MATH,
+first_name: Claire},
+{name: PELI,
+first_name: Alexis},
+{name: MARIE,
+first_name: Nohan},
+{name: PAPIN,
+first_name: Aimeric},
+{name: HAM,
+first_name: Anais},
+{name: ADOU,
+first_name: Wallid}
+
+]
